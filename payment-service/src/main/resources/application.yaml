@@ -1,0 +1,29 @@
+server:
+  port: ${SERVICE_PORT:8082}
+  servlet:
+    context-path: /api
+
+spring:
+  kafka:
+    bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS:localhost:29092}
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      group-id: payment-group
+      properties:
+        spring.json.trusted.packages: '*'
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+
+kafka:
+  orders:
+    consumer:
+      topic: ${kafka_orders_consumer_topic:new_orders}
+      group-id: ${kafka_orders_consumer_group-id:payment-group}
+      concurrency: ${kafka_orders_consumer_concurrency:3}
+
+logging:
+  level:
+    ru.itk.app: ${LOG_LEVEL:DEBUG}
+    org.apache.coyote.http11.Http11Processor: ERROR
